@@ -1,0 +1,52 @@
+node() {
+    def registryProjet='registry.hub.docker.com/ejemaster/camtougo'
+    def IMAGE="${registryProjet}:image-${env.BUILD_ID}"
+
+       stage ('Clone Projet'){
+           
+          git branch: 'cam-dev', credentialsId: 'gitlab', url: 'https://gitlab.com/gvc-solutions/camtougo-api.git'
+       } 
+  stage('Text') {
+    echo 'Vorbereitung für Parallele Testing'
+  }
+
+  stage('Build and Test') {
+   parallel (
+ "Build-maven Package" : { stage("maven Package") {
+ withMaven(maven: 'maven'){
+  sh 'mvn clean install -DskipTests=true  '
+  }
+  }
+  } ,
+ 
+ 
+ "Build- Test" : { stage("Maven Test -Junit Test") {
+ withMaven(maven: 'maven'){
+ sh 'mvn test'
+ }
+ }
+ }
+)
+  }
+  def  img = stage ('Build der Image -Docker Image') {
+     docker.build("$IMAGE", ".")
+ }
+      stage('Test image') {
+       
+
+     sh "docker run  ejemaster/camtougo"
+        
+    }
+      stage('Push- Push der Image auf Dockerhub'){
+          docker.withRegistry('https://registry.hub.docker.com', 'Dockerhub'){
+          img.push("${env.BUILD_ID}")
+          img.push("latest")
+          }
+      }
+    stage('Remove Unused docker image') {
+     
+        sh " docker rmi -f ejemaster/camtogo"
+      
+    }
+  
+}

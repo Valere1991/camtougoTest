@@ -1,0 +1,13 @@
+package com.camtougo.backendCamtougo;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class BackendCamtougoApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
