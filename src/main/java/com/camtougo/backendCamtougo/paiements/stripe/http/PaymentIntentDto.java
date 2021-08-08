@@ -6,7 +6,7 @@ public class PaymentIntentDto {
     }
 
     private String description;
-    private int amount;
+    private double amount;
     private Currency currency;
 
 
@@ -18,16 +18,20 @@ public class PaymentIntentDto {
         this.description = description;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
     public Currency getCurrency() {
         return currency;
+    }
+    
+    public String getStringCurrency() {
+        return currency + "";
     }
 
     public void setCurrency(Currency currency) {
